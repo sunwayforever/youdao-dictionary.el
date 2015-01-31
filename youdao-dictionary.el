@@ -40,7 +40,7 @@
 ;;; Code:
 (require 'json)
 (require 'url)
-(require 'chinese-word-at-point)
+;; (require 'chinese-word-at-point)
 (require 'popup)
 
 ;;;###autoload
@@ -153,7 +153,8 @@ i.e. `[语][计] dictionary' => 'dictionary'."
           (setq buffer-read-only t)
           (local-set-key "q" 'bury-buffer)
           (switch-to-buffer-other-window buffer-name))
-    (message "Nothing to look up")))
+    (search-from-input)
+    ))
 
 :autoload
 (defun search-at-point ()
@@ -169,7 +170,7 @@ i.e. `[语][计] dictionary' => 'dictionary'."
   (let ((word (-region-or-word)))
     (if word
         (popup-tip (-format-result word))
-      (message "Nothing to look up"))))
+      (search-from-input))))
 
 :autoload
 (defun search-from-input ()
