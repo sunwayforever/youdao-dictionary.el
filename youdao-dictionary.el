@@ -66,9 +66,9 @@
 
 (defun -request (word)
   "Request WORD, return JSON as an alist if successes."
-  (when (and search-history-file (file-writable-p search-history-file))
+  ;;(when (and search-history-file (file-writable-p search-history-file))
     ;; Save searching history
-    (append-to-file (concat word "\n") nil search-history-file))
+    ;;(append-to-file (concat word "\n") nil search-history-file))
   (let (json)
     (with-current-buffer (url-retrieve-synchronously
                           (-format-request-url word))
