@@ -151,7 +151,7 @@ i.e. `[语][计] dictionary' => 'dictionary'."
           (insert (-format-result word))
           (goto-char (point-min))
           (setq buffer-read-only t)
-          (local-set-key "q" 'bury-buffer)
+          ;; (local-set-key "q" 'bury-buffer)
           (switch-to-buffer-other-window buffer-name))
     (search-from-input)
     ))
