@@ -123,7 +123,7 @@ i.e. `[语][计] dictionary' => 'dictionary'."
           (message (concat "'" drill-word "' alread drilled"))
         (progn
           (goto-char (point-max))
-          (insert (format "* %s    :drill:\n[%s]\n** Answer\n%s" drill-word drill-phonetic drill-content))
+          (insert (format "* %s    :drill:\n{%s}\n** Answer\n%s" drill-word drill-phonetic drill-content))
           (save-buffer)
           )
         )
