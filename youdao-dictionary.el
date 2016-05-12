@@ -110,6 +110,26 @@ i.e. `[语][计] dictionary' => 'dictionary'."
                       'word)
                     t)))
 
+(setq drill-word nil)
+(setq drill-content nil)
+(setq drill-phonetic nil)
+;; (defvar youdao-drill-file nil)
+(defun save-drill ()
+  (interactive)
+  (let ((buffer (find-file-noselect youdao-drill-file)))
+    (with-current-buffer buffer
+      (goto-char (point-min))
+      (if (search-forward (concat "* " drill-word) nil t)
+          (message (concat "'" drill-word "' alread drilled"))
+        (progn
+          (goto-char (point-max))
+          (insert (format "* %s    :drill:\n[%s]\n** Answer\n%s" drill-word drill-phonetic drill-content))
+          (save-buffer)
+          )
+        )
+      )
+    ))
+
 (defun -format-result (word)
   "Format request result of WORD."
   (let* ((json (-request word))
@@ -120,6 +140,7 @@ i.e. `[语][计] dictionary' => 'dictionary'."
          (basic-explains-str "")
          (web-references (cdr (assoc 'web json)))
          (web-references-str ""))
+    (setq drill-word word)
     (mapc (lambda (explain) (setq basic-explains-str
                                   (concat basic-explains-str
                                           (format "- %s\n" explain))))
@@ -137,6 +158,11 @@ i.e. `[语][计] dictionary' => 'dictionary'."
               (setq web-references-str (concat web-references-str
                                                (format "%s\n" values-str)))))
           web-references)
+    (setq drill-content (concat basic-explains-str "\n" web-references-str))
+    (setq drill-phonetic phonetic)
+    (if (and phonetic youdao-drill-file)
+        (save-drill)
+        )
     (format "%s [%s]\n\n* Basic Explains\n%s\n* Web References\n%s\n"
             query phonetic basic-explains-str web-references-str)))
 
