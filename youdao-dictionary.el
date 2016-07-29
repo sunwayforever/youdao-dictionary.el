@@ -67,8 +67,8 @@
 (defun -request (word)
   "Request WORD, return JSON as an alist if successes."
   ;;(when (and search-history-file (file-writable-p search-history-file))
-    ;; Save searching history
-    ;;(append-to-file (concat word "\n") nil search-history-file))
+  ;; Save searching history
+  ;;(append-to-file (concat word "\n") nil search-history-file))
   (let (json)
     (with-current-buffer (url-retrieve-synchronously
                           (-format-request-url word))
@@ -162,23 +162,28 @@ i.e. `[语][计] dictionary' => 'dictionary'."
     (setq drill-phonetic phonetic)
     (if (and phonetic youdao-drill-file)
         (save-drill)
-        )
+      )
     (format "%s [%s]\n\n* Basic Explains\n%s\n* Web References\n%s\n"
             query phonetic basic-explains-str web-references-str)))
 
 (defun -search-and-show-in-buffer (word)
   "Search WORD and show result in `youdao-dictionary-buffer-name' buffer."
   (if word
-      (with-current-buffer (get-buffer-create buffer-name)
+      (progn 
+        (sw/push-window-configuration)
+        (with-current-buffer (get-buffer-create buffer-name)
           (setq buffer-read-only nil)
           (erase-buffer)
-          (when (featurep 'org)
-            (org-mode))
+          (local-set-key (kbd "q") '(lambda()
+                                      (interactive)
+                                      (sw/pop-window-configuration)))
+          ;; (when (featurep 'org)
+          ;;   (org-mode))
           (insert (-format-result word))
           (goto-char (point-min))
           (setq buffer-read-only t)
           ;; (local-set-key "q" 'bury-buffer)
-          (switch-to-buffer-other-window buffer-name))
+          (switch-to-buffer-other-window buffer-name)))
     (search-from-input)
     ))
 
